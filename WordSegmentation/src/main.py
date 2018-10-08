@@ -34,7 +34,7 @@ def main():
 			cv2.rectangle(img,(x,y),(x+w,y+h),0,1) # draw bounding box in summary image
 		
 		# output summary image with bounding boxes around words
-		cv2.imwrite('../out/%s/summary.png'%f, img)
+		#cv2.imwrite('../out/%s/summary.png'%f, img)
 
 
 if __name__ == '__main__':

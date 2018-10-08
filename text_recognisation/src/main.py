@@ -81,16 +81,17 @@ def validate(model, loader):
 	# print validation result
 	charErrorRate = numCharErr / numCharTotal
 	wordAccuracy = numWordOK / numWordTotal
-	print('Character error rate: %f%%. Word accuracy: %f%%.' % (charErrorRate*100.0, wordAccuracy*100.0))
+	#print('Character error rate: %f%%. Word accuracy: %f%%.' % (charErrorRate*100.0, wordAccuracy*100.0))
 	return charErrorRate
 
 
-def infer(model, fnImg):
+def infer(model, fnImg,sentence_list, img_num):
 	"recognize text in image provided by file path"
 	img = preprocess(cv2.imread(fnImg, cv2.IMREAD_GRAYSCALE), Model.imgSize)
 	batch = Batch(None, [img] * Model.batchSize) # fill all batch elements with same input image
 	recognized = model.inferBatch(batch) # recognize text
-	print('Recognized:', '"' + recognized[0] + '"') # all batch elements hold same result
+	sentence_list.append((img_num,recognized[0]))
+	#print('Recognized:', '"' + recognized[0] + '"') # all batch elements hold same result
 
 def prepareImg(img, height):
 	"""convert given image to grayscale image (if needed) and resize to desired height"""
@@ -127,6 +128,7 @@ def main():
 
 	# infer text on test image
 	else:
+		sentence_list = []
 		print(open(FilePaths.fnAccuracy).read())
 		model = Model(open(FilePaths.fnCharList).read(), args.beamsearch, mustRestore=True)
 		imgFiles = os.listdir('../../WordSegmentation/out/11.png')
@@ -135,10 +137,12 @@ def main():
 			
 			# read image, prepare it by resizing it to fixed height and converting it to grayscale
 			img1 = '../../WordSegmentation/out/11.png/' + f
-			img = prepareImg(cv2.imread('11.png/%s'%f), 50)
-			infer(model, img1)
+			#img = prepareImg(cv2.imread('11.png/%s'%f), 50)
+			infer(model, img1, sentence_list,f)
 			#infer(model, FilePaths.fnInfer)
-
+		sentence_list = sorted(sentence_list, key=lambda entry:entry[0][0])
+		for x,y in sentence_list:
+			print(y + " ")
 
 if __name__ == '__main__':
 	main()
