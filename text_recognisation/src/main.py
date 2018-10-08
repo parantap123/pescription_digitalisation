@@ -1,6 +1,7 @@
 import sys
 import argparse
 import cv2
+import os
 #import editdistance
 from DataLoader import DataLoader, Batch
 from Model import Model
@@ -91,7 +92,14 @@ def infer(model, fnImg):
 	recognized = model.inferBatch(batch) # recognize text
 	print('Recognized:', '"' + recognized[0] + '"') # all batch elements hold same result
 
-
+def prepareImg(img, height):
+	"""convert given image to grayscale image (if needed) and resize to desired height"""
+	assert img.ndim in (2, 3)
+	if img.ndim == 3:
+		img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+	h = img.shape[0]
+	factor = height / h
+	return cv2.resize(img, dsize=None, fx=factor, fy=factor)
 def main():
 	"main function"
 	# optional command line args
@@ -121,7 +129,15 @@ def main():
 	else:
 		print(open(FilePaths.fnAccuracy).read())
 		model = Model(open(FilePaths.fnCharList).read(), args.beamsearch, mustRestore=True)
-		infer(model, FilePaths.fnInfer)
+		imgFiles = os.listdir('../../WordSegmentation/out/11.png')
+		for (i,f) in enumerate(imgFiles):
+			print('Segmenting words of sample %s'%f)
+			
+			# read image, prepare it by resizing it to fixed height and converting it to grayscale
+			img1 = '../../WordSegmentation/out/11.png/' + f
+			img = prepareImg(cv2.imread('11.png/%s'%f), 50)
+			infer(model, img1)
+			#infer(model, FilePaths.fnInfer)
 
 
 if __name__ == '__main__':
