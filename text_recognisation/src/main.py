@@ -6,6 +6,8 @@ import os
 from DataLoader import DataLoader, Batch
 from Model import Model
 from SamplePreprocessor import preprocess
+import jamspell
+
 
 
 class FilePaths:
@@ -91,7 +93,7 @@ def infer(model, fnImg,sentence_list, img_num):
 	batch = Batch(None, [img] * Model.batchSize) # fill all batch elements with same input image
 	recognized = model.inferBatch(batch) # recognize text
 	sentence_list.append((img_num,recognized[0]))
-	print('Recognized:', '"' + recognized[0] + '"') # all batch elements hold same result
+	#print('Recognized:', '"' + recognized[0] + '"') # all batch elements hold same result
 
 def prepareImg(img, height):
 	"""convert given image to grayscale image (if needed) and resize to desired height"""
@@ -144,7 +146,15 @@ def main():
 		sentence = ""
 		for x,y in sentence_list:
 			sentence = sentence + " "+ y
-		print(sentence)	
+		text_file = open("sentence.txt", "w")
+		corrector = jamspell.TSpellCorrector()
+		print("yo")
+		corrector.LoadLangModel('en.bin')
+		print("yo")
+		sentence =  corrector.FixFragment(sentence)
+		print(sentence)
+		text_file.write(sentence)
+		text_file.close()	
 
 if __name__ == '__main__':
 	main()
