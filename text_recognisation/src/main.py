@@ -91,7 +91,7 @@ def infer(model, fnImg,sentence_list, img_num):
 	batch = Batch(None, [img] * Model.batchSize) # fill all batch elements with same input image
 	recognized = model.inferBatch(batch) # recognize text
 	sentence_list.append((img_num,recognized[0]))
-	#print('Recognized:', '"' + recognized[0] + '"') # all batch elements hold same result
+	print('Recognized:', '"' + recognized[0] + '"') # all batch elements hold same result
 
 def prepareImg(img, height):
 	"""convert given image to grayscale image (if needed) and resize to desired height"""
@@ -129,20 +129,22 @@ def main():
 	# infer text on test image
 	else:
 		sentence_list = []
-		print(open(FilePaths.fnAccuracy).read())
+		#print(open(FilePaths.fnAccuracy).read())
 		model = Model(open(FilePaths.fnCharList).read(), args.beamsearch, mustRestore=True)
-		imgFiles = os.listdir('../../WordSegmentation/out/11.png')
+		imgFiles = os.listdir('../../WordSegmentation/out/1.png')
 		for (i,f) in enumerate(imgFiles):
-			print('Segmenting words of sample %s'%f)
+			print(' recognised the word %s'%f)
 			
 			# read image, prepare it by resizing it to fixed height and converting it to grayscale
-			img1 = '../../WordSegmentation/out/11.png/' + f
+			img1 = '../../WordSegmentation/out/1.png/' + f
 			#img = prepareImg(cv2.imread('11.png/%s'%f), 50)
 			infer(model, img1, sentence_list,f)
 			#infer(model, FilePaths.fnInfer)
 		sentence_list = sorted(sentence_list, key=lambda entry:entry[0][0])
+		sentence = ""
 		for x,y in sentence_list:
-			print(y + " ")
+			sentence = sentence + " "+ y
+		print(sentence)	
 
 if __name__ == '__main__':
 	main()

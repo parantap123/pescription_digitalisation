@@ -2,7 +2,7 @@ import numpy as np
 import cv2
 
 # read
-img = cv2.imread('in.png', cv2.IMREAD_GRAYSCALE)
+img = cv2.imread('in2.png', cv2.IMREAD_GRAYSCALE)
 
 # increase contrast
 pxmin = np.min(img)

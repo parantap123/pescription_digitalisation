@@ -19,7 +19,7 @@ def main():
 		# -sigma: standard deviation of Gaussian function used for filter kernel
 		# -theta: approximated width/height ratio of words, filter function is distorted by this factor
 		# - minArea: ignore word candidates smaller than specified area
-		res = wordSegmentation(img, kernelSize=15, sigma=11, theta=7, minArea=5)
+		res = wordSegmentation(img, kernelSize=17, sigma=11, theta=7, minArea=10)
 		
 		# write output to 'out/inputFileName' directory
 		if not os.path.exists('../out/%s'%f):
@@ -34,7 +34,7 @@ def main():
 			cv2.rectangle(img,(x,y),(x+w,y+h),0,1) # draw bounding box in summary image
 		
 		# output summary image with bounding boxes around words
-		#cv2.imwrite('../out/%s/summary.png'%f, img)
+		cv2.imwrite('../out/%s/summary.png'%f, img)
 
 
 if __name__ == '__main__':
